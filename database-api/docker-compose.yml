@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     environment:
-      MY_CONN_STRING: "Server=host.docker.internal;Initial Catalog=trek;User ID=sa;Password=${SA_PWD};TrustServerCertificate=True"
+      MY_CONN_STRING: "Server=sqltrek;Initial Catalog=trek;User ID=sa;Password=${SA_PWD};TrustServerCertificate=True"
     volumes:
       - "./startrek.json:/App/dab-config.json"
     ports:
@@ -17,6 +17,7 @@ services:
 
   sqlDatabase:
     image: mcr.microsoft.com/mssql/server
+
     container_name: trekdb
     hostname: sqltrek
     environment:
@@ -33,5 +34,7 @@ services:
       - -c
       - |
         /opt/mssql/bin/sqlservr & sleep 30
-        /opt/mssql-tools/bin/sqlcmd -U sa -P $$MSSQL_SA_PASSWORD -d master -i /startrek.sql
+        /opt/mssql-tools18/bin/sqlcmd -S localhost -C -U sa -P "$$MSSQL_SA_PASSWORD" -d master -i /startrek.sql
         sleep infinity
+
+
